@@ -66,7 +66,7 @@ class Constants {
       secretKey: 'EDEmg1I0DnvJX03czFOPjekwxerpuojFJPc0nj2E7ABiasT9cCdW2OfSNxmO4K2fRP_Nc7NrWl3iv7S0'
     }
   }
-  readonly baseURL = 'http://localhost:3000'
+  readonly baseURL = 'https://minato-aqua.herokuapp.com'
 }
 
 export default new Constants;
