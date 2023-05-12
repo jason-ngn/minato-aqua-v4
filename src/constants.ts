@@ -51,6 +51,10 @@ class Constants {
     sandbox: {
       clientId: 'Ada3x_YFphP67rKVDl0OEO3kJlengDkdBZHzKUbZbbXF6Md7ei4foxHjOoJB72NW6KJFYnX_Yc5oTwDb',
       secretKey: 'EDEmg1I0DnvJX03czFOPjekwxerpuojFJPc0nj2E7ABiasT9cCdW2OfSNxmO4K2fRP_Nc7NrWl3iv7S0'
+    },
+    live: {
+      clientId: 'AaKGqim7oW2ow8NufR05fpE-ejRllUzMwGCz3EdkB7_tYYms8E_gKz1vYK6rsspFDdZUz7HRuyMt1rSs',
+      secretKey: 'EJjgd_T9UK6PtUlk1xlSic9IAU0bnUy4UByAXkAl3t0ZRNi2MrEEBCSP7feC78H3ES3LltysYTZUw3ga'
     }
   }
   readonly baseURL = 'https://minato-aqua.herokuapp.com'

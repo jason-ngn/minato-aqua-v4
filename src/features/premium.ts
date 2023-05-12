@@ -6,7 +6,7 @@ import Subscriptions from "../models/Subscriptions";
 
 export default class Premium extends FeatureTemplate {
   public static readonly shared = new Premium()
-  public paypal = new PayPal(constants.paypalConfig.sandbox.clientId, constants.paypalConfig.sandbox.secretKey)
+  public paypal = new PayPal(constants.Beta === true ? constants.paypalConfig.sandbox.clientId : constants.paypalConfig.live.clientId, constants.Beta === true ? constants.paypalConfig.sandbox.secretKey : constants.paypalConfig.live.secretKey)
 
   public async init(client: Client<boolean>): Promise<void> { }
 
