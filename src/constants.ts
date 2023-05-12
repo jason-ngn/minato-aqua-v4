@@ -45,19 +45,6 @@ class Constants {
       password: "glasshost1984",
       secure: false
     },
-    // {
-    //   "name": "free",
-    //   "host": "ssl.freelavalink.ga",
-    //   "port": 443,
-    //   "password": "www.freelavalink.ga",
-    //   "secure": true,
-    // },
-    // {
-    //   host: "node1.kartadharta.xyz",
-    //   port: 443,
-    //   password: "kdlavalink",
-    //   secure: true
-    // }
   ] as NodeType[];
   readonly favoritesPlaylistName = 'Yêu thích'
   readonly paypalConfig = {
