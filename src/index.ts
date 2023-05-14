@@ -19,7 +19,7 @@ client.on('ready', async () => {
 
   erela.init(client.user?.id);
   await new DatabaseHandler(Constants.MongoURL).init(path.join(__dirname, 'models'))
-  new Backend(client, 3000)
+  new Backend(client, Constants.port)
   await new CommandHandler(client, {
     commandsDir: path.join(__dirname, 'commands'),
     featuresDir: path.join(__dirname, 'features'),

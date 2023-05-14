@@ -4,9 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "PORT=3000 BETA=TRUE nodemon ./src/index.ts ",
+		"dev": "BETA=TRUE nodemon ./src/index.ts ",
 		"test": "nodemon ./src/test.ts",
-		"start": "npx ts-node ./src/index.ts BETA=FALSE $PORT=3000"
+		"start": "npx ts-node ./src/index.ts BETA=FALSE"
 	},
 	"keywords": [],
 	"author": "",
