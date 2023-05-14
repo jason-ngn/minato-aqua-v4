@@ -58,6 +58,7 @@ class Constants {
     }
   }
   readonly baseURL = 'https://minato-aqua.herokuapp.com'
+  readonly port = process.env.$PORT;
 }
 
 export default new Constants;

@@ -18,9 +18,8 @@ client.on('ready', async () => {
   } else console.log(`Production mode enabled.`)
 
   erela.init(client.user?.id);
-
-  const backend = new Backend(client, 3000)
   await new DatabaseHandler(Constants.MongoURL).init(path.join(__dirname, 'models'))
+  new Backend(client, 3000)
   await new CommandHandler(client, {
     commandsDir: path.join(__dirname, 'commands'),
     featuresDir: path.join(__dirname, 'features'),
