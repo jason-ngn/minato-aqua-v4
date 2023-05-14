@@ -28,6 +28,12 @@ export default class PayPal {
     subscriptionId: string;
     productId: string;
   }>()
+  public products = new Collection<string, {
+    id: string;
+    name: string;
+    description: string;
+    type: string;
+  }>()
   public getURL(endpoint: string, queries = {}) {
     let url = 'https://api-m.sandbox.paypal.com/v1';
 
@@ -48,16 +54,9 @@ export default class PayPal {
     this.getAccessToken().then(async (res) => {
       this.interval = setInterval(async () => this.getAccessToken(), res.expires_in)
 
+      await this.loadProducts();
       await this.loadPlans();
       await this.loadSubscriptions();
-
-      await this.updateProduct('MA-PREM-BASIC', [
-        {
-          op: 'replace',
-          path: '/description',
-          value: 'Đây là gói premium cơ bản nhất của Minato Aqua mà bạn có thể đăng kí. Chỉ bao gồm những tính năng: tự động phát bài hát tiếp theo, tua tới 1 thời gian nhất định trong bài hát,...'
-        }
-      ])
     })
   }
 
@@ -79,6 +78,28 @@ export default class PayPal {
     })
     this.accessToken = res.data.access_token;
     return res.data;
+  }
+
+  async loadProducts() {
+    const { data: { products: productsRes } } = await this.request({
+      method: 'GET',
+      endpoint: '/catalogs/products',
+    })
+
+    if (!productsRes.length) {
+      for (const { product } of products) {
+        await this.createProduct(product);
+      }
+
+      await this.loadProducts();
+      return;
+    }
+
+    for (const product of productsRes) {
+      this.products.set(product.id, product);
+    }
+    console.log(this.products)
+    return this.products.size;
   }
 
   async updatePlan(planId: string, operations: UpdateOperation[]) {
@@ -213,6 +234,16 @@ export default class PayPal {
       method: 'GET',
       endpoint: '/billing/plans',
     })
+
+    if (!plans.length) {
+      for (const { plan } of products) {
+        await this.createPlan(plan);
+      }
+
+      await this.loadPlans();
+      return this.plans.size;
+    }
+    console.log(plans)
 
     for (const plan of plans) {
       const planDetails = await this.getPlanDetails(plan.id);

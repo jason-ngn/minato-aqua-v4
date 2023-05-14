@@ -43,12 +43,13 @@ export default [
       },
     } as Plan
   },
-  {
-    product: {
-      id: 'MA-PREM-ADVANCED',
-      name: 'Premium Nâng Cấp',
-      description: 'Đây là gói premium nâng cấp của Minato Aqua. Các tính năng có trong premium này bao gồm phát các video trên nền tăng YouTube, tạo các danh sách phát theo tuỳ ý'
-    },
-    plan: {} as Plan,
-  }
+  // {
+  //   product: {
+  //     id: 'MA-PREM-ADVANCED',
+  //     name: 'Premium Nâng Cấp',
+  //     description: 'Đây là gói premium nâng cấp của Minato Aqua. Các tính năng có trong premium này bao gồm phát các video trên nền tăng YouTube, tạo các danh sách phát theo tuỳ ý'
+
+  //   },
+  //   plan: {} as Plan,
+  // }
 ]
