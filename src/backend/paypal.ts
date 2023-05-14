@@ -98,7 +98,6 @@ export default class PayPal {
     for (const product of productsRes) {
       this.products.set(product.id, product);
     }
-    console.log(this.products)
     return this.products.size;
   }
 
@@ -243,7 +242,6 @@ export default class PayPal {
       await this.loadPlans();
       return this.plans.size;
     }
-    console.log(plans)
 
     for (const plan of plans) {
       const planDetails = await this.getPlanDetails(plan.id);
