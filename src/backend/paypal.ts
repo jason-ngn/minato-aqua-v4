@@ -1,9 +1,8 @@
 import constants from "../constants";
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { Plan, Subscription, Subscriber, UpdateOperation } from "../types";
+import { Plan, Subscription, Subscriber, UpdateOperation, PricingScheme } from "../types";
 import { Collection } from "discord.js";
 import Subscriptions from "../models/Subscriptions";
-import products from "../products";
 
 type PlanExtended = Plan & {
   id: string;
@@ -86,15 +85,6 @@ export default class PayPal {
       endpoint: '/catalogs/products',
     })
 
-    if (!productsRes.length) {
-      for (const { product } of products) {
-        await this.createProduct(product);
-      }
-
-      await this.loadProducts();
-      return;
-    }
-
     for (const product of productsRes) {
       this.products.set(product.id, product);
     }
@@ -108,6 +98,20 @@ export default class PayPal {
       data: operations
     })
 
+    const plan = this.plans.get(planId)!;
+
+    for (const operation of operations) {
+      const op = operation.op!;
+      const path = operation.path!.replace('/', '');
+      const value = operation.value;
+
+      if (op === 'add') (plan as any)[path] = value;
+      else if (op === 'replace') (plan as any)[path] = value;
+      else if (op === 'remove') delete (plan as any)[path];
+    }
+
+    this.plans.set(planId, plan);
+
     return res.data;
   }
 
@@ -117,6 +121,24 @@ export default class PayPal {
       endpoint: `/catalogs/products/${productId}`,
       data: operations
     })
+
+    const product = this.products.get(productId)!;
+
+    for (const operation of operations) {
+      const op = operation.op!;
+      const path = operation.path!.replace('/', '');
+      const value = operation.value;
+
+      if (op === 'add') {
+        (product as any)[path] = value;
+      } else if (op === 'replace') {
+        (product as any)[path] = value;
+      } else if (op === 'remove') {
+        delete (product as any)[path];
+      }
+    }
+
+    this.products.set(productId, product);
 
     return res.data;
   }
@@ -209,23 +231,62 @@ export default class PayPal {
     return this.subscriptions.size;
   }
 
-  async createPlan(plan: Plan) {
+  async createPlan(plan: Plan): Promise<PlanExtended> {
     const res = await this.request({
       method: 'POST',
       endpoint: '/billing/plans',
       data: plan,
     })
 
+    const details = await this.getPlanDetails(res.data.id);
+    this.plans.set(res.data.id, details);
     return res.data
   }
 
   async deactivatePlan(planID: string) {
-    const res = await this.request({
+    await this.request({
       method: 'POST',
       endpoint: `/billing/plans/${planID}/deactivate`
     })
 
-    return res.data;
+    const plan = this.plans.get(planID)!;
+    plan.status = 'INACTIVE';
+    this.plans.set(planID, plan);
+  }
+
+  async activatePlan(planId: string) {
+    await this.request({
+      method: 'POST',
+      endpoint: `/billing/plans/${planId}/activate`
+    })
+
+    const plan = this.plans.get(planId)!;
+    plan.status = 'ACTIVE';
+    this.plans.set(planId, plan);
+  }
+
+  async updatePricing(planId: string, pricingSchemes: {
+    billing_cycle_sequence: number;
+    pricing_scheme: PricingScheme
+  }[]) {
+    await this.request({
+      method: 'POST',
+      endpoint: `/billing/plans/${planId}/update-pricing-schemes`,
+      data: {
+        pricing_schemes: pricingSchemes
+      }
+    })
+
+    const plan = this.plans.get(planId)!;
+    for (const cycle of pricingSchemes) {
+      const billingCycle = plan.billing_cycles!.find(c => c.sequence === cycle.billing_cycle_sequence)!;
+      const indexOfCycle = plan.billing_cycles!.indexOf(billingCycle);
+
+      billingCycle.pricing_scheme = cycle.pricing_scheme;
+      plan.billing_cycles![indexOfCycle] = billingCycle;
+    }
+
+    this.plans.set(planId, plan);
   }
 
   async loadPlans() {
@@ -233,15 +294,6 @@ export default class PayPal {
       method: 'GET',
       endpoint: '/billing/plans',
     })
-
-    if (!plans.length) {
-      for (const { plan } of products) {
-        await this.createPlan(plan);
-      }
-
-      await this.loadPlans();
-      return this.plans.size;
-    }
 
     for (const plan of plans) {
       const planDetails = await this.getPlanDetails(plan.id);
@@ -281,6 +333,8 @@ export default class PayPal {
         type,
       }
     })
+
+    this.products.set(res.data.id, res.data);
 
     return res.data
   }

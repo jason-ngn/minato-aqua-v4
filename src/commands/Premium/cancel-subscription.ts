@@ -1,7 +1,6 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandTemplate } from "icytea-command-handler";
 import Subscriptions from "../../models/Subscriptions";
-import products from "../../products";
 import axios from "axios";
 import Premium from "../../features/premium";
 
@@ -23,11 +22,12 @@ export default class CancelSubscription extends CommandTemplate {
       },
       autocompleteFunction: async (interaction, focusedArg, handler) => {
         const subCache = Subscriptions.shared.cache;
+        const products = Premium.shared.paypal.products
 
         if (focusedArg.name === 'subscription-id') {
           if (!focusedArg.value.length) {
             return subCache.map(sub => ({
-              name: `${sub.subscriptionId} - ${products.find(prod => prod.product.id === sub.productId)!.product.name}`,
+              name: `${sub.subscriptionId} - ${products.find(prod => prod.id === sub.productId)!.name}`,
               value: sub.subscriptionId,
             }))
           }
@@ -36,7 +36,7 @@ export default class CancelSubscription extends CommandTemplate {
           if (!specificIds || !specificIds.length) return;
 
           return specificIds.map(sub => ({
-            name: `${sub.subscriptionId} - ${products.find(prod => prod.product.id === sub.productId)!.product.name}`,
+            name: `${sub.subscriptionId} - ${products.find(prod => prod.id === sub.productId)!.name}`,
             value: sub.subscriptionId,
           }))
         }

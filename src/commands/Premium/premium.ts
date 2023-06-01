@@ -30,7 +30,7 @@ export default class Premium extends CommandTemplate {
           })
 
         for (const { product, plan } of products) {
-          const planPrice = plan.billing_cycles.find(c => c.tenure_type === 'REGULAR')!;
+          const planPrice = plan.billing_cycles!.find(c => c.tenure_type === 'REGULAR')!;
           const price = planPrice.pricing_scheme.fixed_price.value;
           const currency = planPrice.pricing_scheme.fixed_price.currency_code;
           let unit = ''

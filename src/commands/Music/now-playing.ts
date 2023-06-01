@@ -5,6 +5,8 @@ import { isPlayerAvailable } from "../../checks";
 import constants from "../../constants";
 import { formatDuration, getThumbnail } from "../../functions";
 
+const youtubeLinkRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=([a-zA-Z0-9_]+)|youtu\.be\/([a-zA-Z\d_]+))(?:&.*)?$/gm
+
 export default class NowPlaying extends CommandTemplate {
   constructor() {
     super({
@@ -39,7 +41,12 @@ export default class NowPlaying extends CommandTemplate {
           .setColor(constants.embed.color)
           .setDescription(`[${currentTrack.title}](${currentTrack.uri})\nbởi **${currentTrack.author}**\n\n${playerDuration} / ${trackDuration}`)
 
-        const thumbnail = await getThumbnail(currentTrack.uri!)
+        let thumbnail;
+        if (currentTrack.uri?.match(youtubeLinkRegex)?.length) {
+          thumbnail = currentTrack.displayThumbnail!('maxresdefault')
+        } else {
+          thumbnail = await getThumbnail(currentTrack.uri!);
+        }
 
         if (thumbnail) embed.setThumbnail(thumbnail);
 

@@ -5,7 +5,7 @@ import Subscriptions from "./models/Subscriptions";
 import constants from "./constants";
 
 export function doesUserHaveBasicPremium({ interaction, member, user }: CallbackObject): CheckReturnObject {
-  const cache = Subscriptions.shared.cache.filter(sub => sub.userId === user.id && sub.productId === 'MA-PREM-BASIC')
+  const cache = Subscriptions.shared.cache.filter(sub => sub.userId === user.id && ['MA-PREM-BASIC', 'MA-PREM-ADVANCED'].includes(sub.productId));
   if (constants.owners.includes(user.id)) return {
     result: true,
   }

@@ -11,7 +11,7 @@ export interface Plan {
   name: string;
   status?: 'CREATED' | 'ACTIVE' | 'INACTIVE';
   description?: string;
-  billing_cycles: BillingCycle[];
+  billing_cycles?: BillingCycle[];
   quantity_supported?: boolean;
   payment_preferences: PaymentPreferences;
   taxes?: Tax

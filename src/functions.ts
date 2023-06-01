@@ -285,3 +285,19 @@ export function getMetadataOfCommand(command: string, instance: Guild | Client):
 export function getSlashCommandMention(commandId: string, commandName: string): string {
   return `</${commandName}:${commandId}>`;
 }
+
+export function getRandomStringOfNumbers() {
+  const min = 0
+  const max = 9
+  let numbers: string = '';
+
+  for (let i = 0; i < 9; i++) {
+    const number = Math.floor(
+      Math.random() * (max - min + 1) + min
+    )
+
+    numbers += number.toString();
+  }
+
+  return numbers;
+}

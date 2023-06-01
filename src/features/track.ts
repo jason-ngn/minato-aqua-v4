@@ -16,6 +16,7 @@ export const collectorCache = new Collection<
   Snowflake,
   InteractionCollector<ButtonInteraction<CacheType>>
 >();
+const youtubeLinkRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=([a-zA-Z0-9_]+)|youtu\.be\/([a-zA-Z\d_]+))(?:&.*)?$/gm
 
 const favoriteButtonId = 'favorite';
 
@@ -52,7 +53,12 @@ export default class TrackStart extends FeatureTemplate {
           .setTitle(`Đang phát`)
           .setDescription(`[${currentTrack.title}](${currentTrack.uri})\nbởi **${currentTrack.author}**`)
 
-        const thumbnail = await getThumbnail(currentTrack.uri!);
+        let thumbnail;
+        if (currentTrack.uri?.match(youtubeLinkRegex)?.length) {
+          thumbnail = currentTrack.displayThumbnail!('maxresdefault')
+        } else {
+          thumbnail = await getThumbnail(currentTrack.uri!);
+        }
 
         if (thumbnail) embed.setThumbnail(thumbnail)
 

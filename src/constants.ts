@@ -6,6 +6,7 @@ class Constants {
   readonly BetaToken = 'OTk4ODY3NDc1NjYxODU2Nzg5.G4p6HP.8fToXJMrC7byBxtXknXQ-gUH6LAMSJwGEFqsos'
   readonly Beta = process.env.BETA === 'TRUE' ? true : false
   readonly MongoURL = 'mongodb+srv://Jason:620521@icybot.bcikm.mongodb.net/Minato-Aqua-V4?retryWrites=true&w=majority'
+  // readonly MongoURL = ''
   readonly owners = ["754982406393430098", "752196368004677634", "873990163422916719"]
   readonly TestServers = ["773477649174626344", "910524368545792040"]
   readonly links = {
@@ -57,8 +58,8 @@ class Constants {
       secretKey: 'EJjgd_T9UK6PtUlk1xlSic9IAU0bnUy4UByAXkAl3t0ZRNi2MrEEBCSP7feC78H3ES3LltysYTZUw3ga'
     }
   }
-  readonly baseURL = 'https://minato-aqua.herokuapp.com'
-  readonly port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+  readonly port = process.env.PORT ? parseInt(process.env.PORT) : 4296;
+  readonly baseURL = this.Beta === false ? `https://zeus.daki.cc:${this.port}` : `http://localhost:${this.port}`
 }
 
-export default new Constants;
+export default new Constants

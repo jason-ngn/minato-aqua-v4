@@ -44,8 +44,8 @@ export default class Subscribe extends CommandTemplate {
         for (const plan of plans.values()) {
           const name = plan.name
           const id = plan.product_id;
-          const price = plan.billing_cycles.find(cycle => cycle.tenure_type === 'REGULAR')!;
-          const trial = plan.billing_cycles.find(cycle => cycle.tenure_type === 'TRIAL');
+          const price = plan.billing_cycles!.find(cycle => cycle.tenure_type === 'REGULAR')!;
+          const trial = plan.billing_cycles!.find(cycle => cycle.tenure_type === 'TRIAL');
           let trialType: string = '';
 
           if (trial) {
@@ -143,16 +143,14 @@ export default class Subscribe extends CommandTemplate {
             time: 60000 * 10,
           })
 
-          await modalSubmit.deferReply({
-            ephemeral: true,
-          })
+          await modalSubmit.deferUpdate()
           const firstName = modalSubmit.fields.getTextInputValue(firstNameId);
           const lastName = modalSubmit.fields.getTextInputValue(lastNameId);
           const quantity = parseInt(modalSubmit.fields.getTextInputValue(quantityId));
 
           const approveLink = await Premium.shared.checkout(user.id, productId, quantity, firstName, lastName);
 
-          await modalSubmit.editReply({
+          await interaction.editReply({
             embeds: [
               new EmbedBuilder()
                 .setColor(constants.embed.color)

@@ -3,6 +3,7 @@ import { Track } from "erela.js";
 import { FeatureTemplate } from "icytea-command-handler";
 import erela from "..";
 import Playlists from '../models/Playlists'
+import Premium from "./premium";
 
 export default class Playlist extends FeatureTemplate {
   public static readonly shared = new Playlist();

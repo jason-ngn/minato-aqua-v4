@@ -7,7 +7,7 @@ import emoji from "../../emoji";
 import PlaylistFeature from '../../features/playlist'
 import { formatDuration } from "../../functions";
 import PlaylistsModel from "../../models/Playlists";
-import { } from '../../checks'
+import Premium from "../../features/premium";
 
 const selectMenuId = 'select-menu';
 const backId = "back";
@@ -269,6 +269,20 @@ const createCommand = async ({ client, channel, interaction, user, options, guil
     return await interaction.editReply({
       content: `Đã có 1 danh sách phát có tên này rồi, bạn vui lòng thay bằng tên khác nhé.`
     })
+  }
+
+  const playlists = await PlaylistFeature.shared.getPlaylists(client, user.id);
+
+  if (playlists) {
+    if (playlists.length >= 4 && !Premium.shared.checkForPremium(user.id, 'MA-PREM-BASIC')) {
+      return await interaction.editReply({
+        content: `Bạn không đăng kí gói Premium Cơ Bản, vì thế nên bạn chỉ được tạo tối đa 4 danh sách phát.`
+      })
+    } else if (playlists.length >= 8 && !Premium.shared.checkForPremium(user.id, 'MA-PREM-ADVANCED')) {
+      return await interaction.editReply({
+        content: `Bạn không đăng kí gói Premium Nâng Cao, vì thế nên bạn chỉ được tạo tối đa 8 danh sách phát.`
+      })
+    }
   }
 
   await PlaylistFeature.shared.createPlaylist(client, user.id, playlistName);

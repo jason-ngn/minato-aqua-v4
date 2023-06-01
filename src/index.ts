@@ -25,7 +25,7 @@ client.on('ready', async () => {
     featuresDir: path.join(__dirname, 'features'),
     testServers: Constants.TestServers,
     testOnly: Constants.Beta,
-    owners: Constants.owners
+    owners: Constants.owners,
   }).init()
 
   console.log(`Logged in as ${client.user?.tag}.`)
