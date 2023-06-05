@@ -1,31 +1,5 @@
-import { Collection } from "discord.js";
+const link = "https://app.myimaths.com/2922-homework/completing-the-square";
+const hackLink =
+  "https://static.myimaths.com/xml/player/v2.7/build/index.html?accountID=714&apiHost=https%3A%2F%2Fcontentapi.myimaths.com&assetHost=https%3A%2F%2Fstatic.myimaths.com%2F&authCode=70805&contentPath=xml%2Fen%2Fconversion%2Fa_level%2Fcore_1%2Fpolynomials%2Fcompleting_the_square_homework%2F&curriculum=2018+Cambridge+AS+%26+A+Level&downloadPdf=true&gid=GTM-KMX2PQ4&markID=30893190&partialSave=false&passingMark=1&platform=myimaths&platformHost=https%3A%2F%2Fapp.myimaths.com&printHost=https%3A%2F%2F84ychiuuc2.execute-api.eu-west-1.amazonaws.com&realID=2922&resourceUrl=%2F2922-lesson%2Fcompleting-the-square&saveAnswer=true&schoolType=secondary&studentID=2163077&taskID=2017&viewAnswers=true#";
 
-const firstCollection = new Collection<string, {}>()
-const secondCollection = new Collection<string, {}>()
-
-firstCollection
-  .set('hi', {
-    name: 'hi',
-    description: 'lmao'
-  })
-  .set('hello', {
-    name: 'hello',
-    description: 'oof'
-  })
-// .set('hi', 'hi')
-// .set('hello', 'hello')
-
-secondCollection
-  .set('hi', {
-    name: 'hi',
-    description: 'lmao'
-  })
-// .set('hi', 'hi')
-
-console.log('FIRST:', firstCollection.difference(secondCollection))
-console.log('FIRST:', firstCollection.subtract(secondCollection))
-
-console.log('SECOND:', secondCollection.difference(firstCollection))
-console.log('SECOND:', secondCollection.subtract(firstCollection))
-
-console.log('CONCAT:', secondCollection.concat(firstCollection))
+console.log(link, hackLink)

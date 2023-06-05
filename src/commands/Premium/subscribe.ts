@@ -4,10 +4,6 @@ import constants from "../../constants";
 import Premium from "../../features/premium";
 
 const selectMenuId = 'select-menu';
-const modalId = 'modal';
-const firstNameId = 'first-name';
-const lastNameId = 'last-name';
-const quantityId = 'quantity';
 const cancelId = 'cancel';
 
 export default class Subscribe extends CommandTemplate {
@@ -105,50 +101,10 @@ export default class Subscribe extends CommandTemplate {
 
             return;
           }
+          await first.deferUpdate();
           const productId = first.values[0];
 
-          const modal = new ModalBuilder()
-            .setCustomId(modalId)
-            .setTitle(`Thông tin đăng kí`)
-            .setComponents(
-              new ActionRowBuilder<TextInputBuilder>().addComponents(
-                new TextInputBuilder()
-                  .setCustomId(lastNameId)
-                  .setLabel(`Họ:`)
-                  .setRequired(true)
-                  .setPlaceholder('Nhập họ của bạn ở đây.')
-                  .setStyle(TextInputStyle.Short)
-              ),
-              new ActionRowBuilder<TextInputBuilder>().addComponents(
-                new TextInputBuilder()
-                  .setCustomId(firstNameId)
-                  .setLabel(`Tên:`)
-                  .setRequired(true)
-                  .setPlaceholder('Nhập tên của bạn ở đây.')
-                  .setStyle(TextInputStyle.Short)
-              ),
-              new ActionRowBuilder<TextInputBuilder>().addComponents(
-                new TextInputBuilder()
-                  .setCustomId(quantityId)
-                  .setLabel(`Số lượng:`)
-                  .setRequired(true)
-                  .setPlaceholder('Nhập số lượng bạn muốn đăng kí ở đây.')
-                  .setStyle(TextInputStyle.Short)
-              )
-            )
-
-          await first.showModal(modal);
-          const modalSubmit = await first.awaitModalSubmit({
-            filter: i => i.user.id === user.id && i.customId === modalId,
-            time: 60000 * 10,
-          })
-
-          await modalSubmit.deferUpdate()
-          const firstName = modalSubmit.fields.getTextInputValue(firstNameId);
-          const lastName = modalSubmit.fields.getTextInputValue(lastNameId);
-          const quantity = parseInt(modalSubmit.fields.getTextInputValue(quantityId));
-
-          const approveLink = await Premium.shared.checkout(user.id, productId, quantity, firstName, lastName);
+          const approveLink = await Premium.shared.checkout(user.id, productId);
 
           await interaction.editReply({
             embeds: [

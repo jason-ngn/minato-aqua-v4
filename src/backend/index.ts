@@ -2,6 +2,7 @@ import { Client } from "discord.js";
 import express from 'express'
 import Subscriptions from "../models/Subscriptions";
 import Premium from "../features/premium";
+import { SubscriptionStatus } from "../types";
 
 export default class Backend {
   public app = express()
@@ -29,6 +30,7 @@ export default class Backend {
         userId,
         productId: sub.productId,
         nextBillingDate,
+        status: SubscriptionStatus.Active
       })
     })
 

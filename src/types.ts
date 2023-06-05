@@ -140,3 +140,8 @@ export interface Card {
   expiry: string;
   billing_address?: Address;
 }
+
+export enum SubscriptionStatus {
+  Active = "ACTIVE",
+  Cancelled = 'CANCELLED'
+}

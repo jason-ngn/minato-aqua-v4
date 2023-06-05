@@ -172,7 +172,7 @@ export default class PayPal {
     return [key, plan];
   }
 
-  async createSubscription(userId: string, productId: string, quantity: number, subscriber: Subscriber, custom_id?: string, start_time?: string) {
+  async createSubscription(userId: string, productId: string, quantity?: number, subscriber?: Subscriber, custom_id?: string, start_time?: string) {
     let res: AxiosResponse;
 
     const [planId, plan] = this.getPlan(productId)!;
@@ -181,7 +181,6 @@ export default class PayPal {
 
     const subscription: Subscription = {
       plan_id: planId,
-      quantity: quantity.toString(),
       subscriber,
       plan: {
         billing_cycles: plan.billing_cycles,

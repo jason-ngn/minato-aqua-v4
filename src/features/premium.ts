@@ -3,31 +3,51 @@ import { FeatureTemplate } from "icytea-command-handler";
 import constants from "../constants";
 import PayPal from "../backend/paypal";
 import Subscriptions from "../models/Subscriptions";
-import { Plan, PricingScheme, UpdateOperation } from "../types";
+import { Plan, PricingScheme, SubscriptionStatus, UpdateOperation } from "../types";
 import { getRandomStringOfNumbers } from '../functions'
 import { BillingCycle } from "../types";
+import schedule, { Job } from 'node-schedule'
 
 export default class Premium extends FeatureTemplate {
   public static readonly shared = new Premium()
   public paypal = new PayPal(constants.Beta === true ? constants.paypalConfig.sandbox.clientId : constants.paypalConfig.live.clientId, constants.Beta === true ? constants.paypalConfig.sandbox.secretKey : constants.paypalConfig.live.secretKey)
   public planTempCache: Collection<string, Plan> = new Collection();
+  public jobs = new Collection<string, Job>();
 
-  public async init(client: Client<boolean>): Promise<void> { }
+  public async init(client: Client<boolean>): Promise<void> {
+    const cancelledSubscriptions = Subscriptions.shared.cache.filter(sub => sub.status === SubscriptionStatus.Cancelled);
+
+    for (const subscription of cancelledSubscriptions.values()) {
+      const job = schedule.scheduleJob(
+        subscription.subscriptionId,
+        subscription.nextBillingDate,
+        async () => {
+          await Subscriptions.shared.delete({
+            subscriptionId: subscription.subscriptionId
+          })
+        }
+      )
+
+      this.jobs.set(subscription.subscriptionId, job);
+    }
+  }
 
   async cancelSubscription(subscriptionId: string) {
     await this.paypal.cancelSubscription(subscriptionId);
-    await Subscriptions.shared.delete({
-      subscriptionId
+    const sub = Subscriptions.shared.cache.find(s => s.subscriptionId === subscriptionId)!;
+    Subscriptions.shared.update({
+      subscriptionId,
+    }, {
+      subscriptionId,
+      userId: sub.userId,
+      productId: sub.productId,
+      nextBillingDate: sub.nextBillingDate,
+      status: SubscriptionStatus.Cancelled
     })
   }
 
-  async checkout(userId: string, productId: string, quantity: number, firstName: string, lastName: string) {
-    const subscription = await this.paypal.createSubscription(userId, productId, quantity, {
-      name: {
-        given_name: firstName,
-        surname: lastName,
-      }
-    })
+  async checkout(userId: string, productId: string) {
+    const subscription = await this.paypal.createSubscription(userId, productId)
 
     const approveLink = subscription.links.find((link: any) => link.rel === 'approve')!.href;
 

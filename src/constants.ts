@@ -59,7 +59,7 @@ class Constants {
     }
   }
   readonly port = process.env.PORT ? parseInt(process.env.PORT) : 4296;
-  readonly baseURL = this.Beta === false ? `https://zeus.daki.cc:${this.port}` : `http://localhost:${this.port}`
+  readonly baseURL = this.Beta === false ? `http://zeus.daki.cc:${this.port}` : `http://localhost:${this.port}`
 }
 
 export default new Constants

@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import { CommandTemplate } from "icytea-command-handler";
 import constants from '../../constants'
-import products from "../../products";
+import PremiumFeature from '../../features/premium'
 
 export default class Premium extends CommandTemplate {
   constructor() {
@@ -29,24 +29,28 @@ export default class Premium extends CommandTemplate {
             name: 'Minato Aqua Premium'
           })
 
-        for (const { product, plan } of products) {
+        const plans = PremiumFeature.shared.paypal.plans.filter(plan => plan.status === 'ACTIVE');
+        const products = PremiumFeature.shared.paypal.products;
+
+        for (const plan of plans.values()) {
           const planPrice = plan.billing_cycles!.find(c => c.tenure_type === 'REGULAR')!;
           const price = planPrice.pricing_scheme.fixed_price.value;
           const currency = planPrice.pricing_scheme.fixed_price.currency_code;
+          const product = products.get(plan.product_id)!;
           let unit = ''
 
-          if (planPrice.frequency.interval_unit === 'WEEK') unit = 'tuần';
+          if (planPrice.frequency.interval_unit === 'WEEK') unit = 'tuần'
           else if (planPrice.frequency.interval_unit === 'MONTH') unit = 'tháng';
 
           embed.addFields(
             {
               name: 'ID:',
-              value: product.id,
+              value: plan.product_id,
               inline: true,
             },
             {
-              name: 'Tên gói:',
-              value: product.name,
+              name: 'Tên:',
+              value: plan.name,
               inline: true,
             },
             {

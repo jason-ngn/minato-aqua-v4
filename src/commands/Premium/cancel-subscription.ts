@@ -1,7 +1,6 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandTemplate } from "icytea-command-handler";
 import Subscriptions from "../../models/Subscriptions";
-import axios from "axios";
 import Premium from "../../features/premium";
 
 export default class CancelSubscription extends CommandTemplate {
@@ -64,7 +63,7 @@ export default class CancelSubscription extends CommandTemplate {
         await Premium.shared.cancelSubscription(subscriptionId)
 
         return await interaction.editReply({
-          content: `Gói đăng kí \`${subscriptionId}\` đã được huỷ thành công.`
+          content: `Gói đăng kí \`${subscriptionId}\` đã được huỷ thành công. Bạn vẫn có thể dùng gói đến **${plan.nextBillingDate.toLocaleDateString('vi')}**.`
         })
       }
     })
